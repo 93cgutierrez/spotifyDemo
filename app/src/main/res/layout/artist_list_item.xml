@@ -41,7 +41,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/value_dummy_tv_artist_name"
@@ -51,19 +51,50 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/tv_title_artist_followers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/title_followers"
+                android:textAppearance="@style/subtitle_text_2"
+                app:layout_constraintTop_toBottomOf="@id/tv_album_name"
+                app:layout_constraintStart_toStartOf="@id/tv_album_name"
+                app:layout_constraintEnd_toStartOf="@+id/tv_title_artist_popularity"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/tv_artist_followers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/tv_artist_followers_dummy"
+                android:textAppearance="@style/subtitle_text"
+                app:layout_constraintStart_toStartOf="@id/tv_title_artist_followers"
+                app:layout_constraintEnd_toEndOf="@id/tv_title_artist_followers"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_artist_followers"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
                 android:id="@+id/tv_title_artist_popularity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="4dp"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/text_tv_title_artist_popularity"
-                android:textAppearance="@style/subtitle_text"
-                app:layout_constraintStart_toEndOf="@id/iv_artist_image"
+                android:textAppearance="@style/subtitle_text_2"
                 app:layout_constraintTop_toBottomOf="@id/tv_album_name"
+                app:layout_constraintStart_toEndOf="@id/tv_title_artist_followers"
+                app:layout_constraintEnd_toEndOf="@id/tv_album_name"
                 />
 
             <!--<TextView
@@ -83,56 +114,27 @@
 -->
             <hiennguyen.me.circleseekbar.CircleSeekBar
                 android:id="@+id/csb_artist_popularity"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="16dp"
                 app:csb_arcColor="@color/grey"
-                app:csb_arcWidth="4dp"
+                app:csb_arcWidth="6dp"
                 app:csb_thumbDrawable="@drawable/ic_outline_star_24"
                 app:csb_max="100"
                 app:csb_min="0"
                 app:csb_progress="50"
                 app:csb_progressColor="@color/purple_700"
-                app:csb_progressWidth="4dp"
+                app:csb_progressWidth="6dp"
                 app:csb_step="5"
                 app:csb_textColor="@color/black"
-                app:csb_textSize="9sp"
-                app:csb_thumbSize="12dp"
-                app:layout_constraintStart_toEndOf="@id/tv_title_artist_popularity"
-                app:layout_constraintTop_toTopOf="@id/tv_title_artist_popularity"
+                app:csb_textSize="16sp"
+                app:csb_thumbSize="18dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_artist_popularity"
+                app:layout_constraintStart_toEndOf="@id/tv_artist_followers"
+                app:layout_constraintEnd_toEndOf="@id/tv_album_name"
+                app:layout_constraintBottom_toTopOf="@+id/rv_album_list"
                 />
 
-            <TextView
-                android:id="@+id/tv_title_artist_followers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/title_followers"
-                android:textAppearance="@style/subtitle_text"
-                app:layout_constraintStart_toEndOf="@id/csb_artist_popularity"
-                app:layout_constraintTop_toTopOf="@id/tv_title_artist_popularity"
-                tools:ignore="RtlHardcoded" />
-
-            <TextView
-                android:id="@+id/tv_artist_followers"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="@string/tv_artist_followers_dummy"
-                android:textAppearance="@style/subtitle_text_2"
-                app:layout_constraintStart_toEndOf="@id/tv_title_artist_followers"
-                app:layout_constraintTop_toTopOf="@id/tv_title_artist_popularity"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_title_artist_popularity"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="RtlHardcoded" />
 
             <!--TODO: CG 20220122 ADD RECYCLERVIEW ALBUM-->
 
@@ -143,7 +145,7 @@
                 android:layout_marginTop="8dp"
                 android:visibility="visible"
                 tools:itemCount="10"
-                tools:listitem="@layout/album_list_item_vairant"
+                tools:listitem="@layout/album_list_item_variant"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"
                 app:layout_constraintStart_toStartOf="parent"

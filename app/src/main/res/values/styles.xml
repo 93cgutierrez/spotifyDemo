@@ -21,7 +21,7 @@
 
     <style name="subtitle_text">
         <item name="android:textSize">
-            12sp
+            14sp
         </item>
 
         <item name="android:textStyle">
@@ -70,11 +70,11 @@
         </item>
 
         <item name="android:textStyle">
-            bold
+            normal
         </item>
 
         <item name="android:textColor">
-            @color/grey
+            @color/white"
         </item>
         <item name="android:background">
             @color/black_transparent
