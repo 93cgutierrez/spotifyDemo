@@ -5,4 +5,6 @@
     <string name="title_followers">Followers: </string>
     <string name="tv_artist_followers_dummy">2679684</string>
     <string name="text_tv_title_artist_popularity">Popularity:</string>
+    <string name="description_album_image">image album</string>
+    <string name="value_dummy_tv_album_name">ALBUM 100</string>
 </resources>
