@@ -1,4 +1,4 @@
-package co.demo.spotifydemo.model;
+package co.demo.spotifydemo.model.intermediary;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +16,7 @@ public class ItemAlbum implements Serializable
     private String albumType;
     @SerializedName("artists")
     @Expose
-    private List<Artist> artists = null;
+    private List<ArtistResponse> artistResponses = null;
     @SerializedName("available_markets")
     @Expose
     private List<String> availableMarkets = null;
@@ -67,7 +67,7 @@ public class ItemAlbum implements Serializable
      * @param type
      * @param albumGroup
      * @param uri
-     * @param artists
+     * @param artistResponses
      * @param totalTracks
      * @param albumType
      * @param availableMarkets
@@ -76,11 +76,11 @@ public class ItemAlbum implements Serializable
      * @param href
      * @param id
      */
-    public ItemAlbum(String albumGroup, String albumType, List<Artist> artists, List<String> availableMarkets, ExternalUrls externalUrls, String href, String id, List<Image> images, String name, String releaseDate, String releaseDatePrecision, Integer totalTracks, String type, String uri) {
+    public ItemAlbum(String albumGroup, String albumType, List<ArtistResponse> artistResponses, List<String> availableMarkets, ExternalUrls externalUrls, String href, String id, List<Image> images, String name, String releaseDate, String releaseDatePrecision, Integer totalTracks, String type, String uri) {
         super();
         this.albumGroup = albumGroup;
         this.albumType = albumType;
-        this.artists = artists;
+        this.artistResponses = artistResponses;
         this.availableMarkets = availableMarkets;
         this.externalUrls = externalUrls;
         this.href = href;
@@ -110,12 +110,12 @@ public class ItemAlbum implements Serializable
         this.albumType = albumType;
     }
 
-    public List<Artist> getArtists() {
-        return artists;
+    public List<ArtistResponse> getArtists() {
+        return artistResponses;
     }
 
-    public void setArtists(List<Artist> artists) {
-        this.artists = artists;
+    public void setArtists(List<ArtistResponse> artistResponses) {
+        this.artistResponses = artistResponses;
     }
 
     public List<String> getAvailableMarkets() {
@@ -220,7 +220,7 @@ public class ItemAlbum implements Serializable
         sb.append(',');
         sb.append("artists");
         sb.append('=');
-        sb.append(((this.artists == null)?"<null>":this.artists));
+        sb.append(((this.artistResponses == null)?"<null>":this.artistResponses));
         sb.append(',');
         sb.append("availableMarkets");
         sb.append('=');

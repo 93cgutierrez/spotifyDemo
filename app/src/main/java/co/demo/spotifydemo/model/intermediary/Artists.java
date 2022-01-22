@@ -1,4 +1,4 @@
-package co.demo.spotifydemo.model;
+package co.demo.spotifydemo.model.intermediary;
 
 import java.io.Serializable;
 import java.util.List;
