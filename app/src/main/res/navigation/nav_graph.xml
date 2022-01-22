@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/artistFragment">
+
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="co.demo.spotifydemo.view.ArtistFragment"
+        android:label="artist_fragment"
+        tools:layout="@layout/artist_fragment" >
+        <action
+            android:id="@+id/action_artistFragment_to_albumFragment"
+            app:destination="@id/albumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="co.demo.spotifydemo.view.AlbumFragment"
+        android:label="album_fragment"
+        tools:layout="@layout/album_fragment" />
+</navigation>
