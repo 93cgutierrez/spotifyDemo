@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+apply plugin: "androidx.navigation.safeargs"
+
 android {
     compileSdk 32
 
@@ -81,5 +83,8 @@ dependencies {
 
     implementation 'me.hiennguyen.circleseekbar:circleseekbar:1.0.1'
 
-    //implementation 'com.github.murgupluoglu:flagkit-android:1.0.1'
+    //implementation 'com.github.murgupluoglu:flagkit-android:1.0.2'
+    //implementation 'com.github.blongho:worldCountryData:1.5.1'
+    //implementation 'com.github.jsramraj:flags:1.0'
+
 }

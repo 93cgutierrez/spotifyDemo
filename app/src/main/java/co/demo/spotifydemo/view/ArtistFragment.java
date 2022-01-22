@@ -1,5 +1,6 @@
 package co.demo.spotifydemo.view;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -9,7 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,6 +36,12 @@ public class ArtistFragment extends Fragment {
 
     public static ArtistFragment newInstance() {
         return new ArtistFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -85,9 +96,6 @@ public class ArtistFragment extends Fragment {
     }
 
     private void initUI() {
-
-
-
         //TODO: CG 20220122 DATA DUMMY
         mViewModel.getAllArtistList();
 
@@ -104,6 +112,43 @@ public class ArtistFragment extends Fragment {
 
     private void onArtistListener(int position) {
         Toast.makeText(requireActivity(), "artist: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.artistic_fragment_menu, menu);
+
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem mSearchMenuItem = menu.findItem(R.id.action_toolbar_search);
+        SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "onQueryTextSubmit: " + query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "onQueryTextChange: " + newText);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_toolbar_search) {
+            Log.d(TAG, "onOptionsItemSelected: ");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
