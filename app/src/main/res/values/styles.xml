@@ -74,7 +74,7 @@
         </item>
 
         <item name="android:textColor">
-            @color/white"
+            @color/white
         </item>
         <item name="android:background">
             @color/black_transparent

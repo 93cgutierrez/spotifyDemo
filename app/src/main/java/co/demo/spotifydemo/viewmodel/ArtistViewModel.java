@@ -7,13 +7,14 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.demo.spotifydemo.model.data.Album;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.model.repository.ArtistRepository;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class ArtistViewModel extends ViewModel {
     private static final String TAG = ArtistViewModel.class.getCanonicalName();
-    private List<Artist> artistList = new ArrayList<>();
+    public List<Artist> artistList = new ArrayList<>();
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final ArtistRepository artistRepository = new ArtistRepository();
     
@@ -57,10 +58,27 @@ public class ArtistViewModel extends ViewModel {
         return onMessageError;
     }
 
+    public void getAllArtistList() {
+        List<String> images = new ArrayList<>();
+        List<Album> albums = new ArrayList<>();
+        List<String> availableMarkets = new ArrayList<>();
 
+        availableMarkets.add("CO");
+        availableMarkets.add("CA");
+        availableMarkets.add("IT");
+
+
+        images.add("https://dummyimage.com/600x400/e356e3/0011ff");
+        Album album = new Album("album 1", images, availableMarkets);
+        albums.add(album);
+
+        Artist artist = new Artist("Juanes", 345667777, 99, images, albums);
+        artistList.add(artist);
+    }
 
     @Override
     protected void onCleared() {
         disposables.clear();
     }
+
 }

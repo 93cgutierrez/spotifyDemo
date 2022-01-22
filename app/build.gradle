@@ -80,4 +80,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     implementation 'me.hiennguyen.circleseekbar:circleseekbar:1.0.1'
+
+    //implementation 'com.github.murgupluoglu:flagkit-android:1.0.1'
 }

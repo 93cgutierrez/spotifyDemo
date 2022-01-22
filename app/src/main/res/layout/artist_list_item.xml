@@ -29,7 +29,9 @@
                 android:id="@+id/iv_artist_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_margin="4dp"
                 android:contentDescription="@string/description_artist_image"
+                android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -145,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:visibility="visible"
-                tools:itemCount="10"
+                tools:itemCount="3"
                 tools:listitem="@layout/album_list_item_variant"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"

@@ -8,4 +8,5 @@
     <string name="description_album_image">image album</string>
     <string name="value_dummy_tv_album_name">ALBUM 100</string>
     <string name="tv_country_name_dummy">AC</string>
+    <string name="msg_empty_filter">No results found, please mayor again</string>
 </resources>

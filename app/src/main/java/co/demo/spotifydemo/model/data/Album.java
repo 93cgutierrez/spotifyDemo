@@ -14,12 +14,12 @@ public class Album implements Serializable {
     private String name;
     @SerializedName("images")
     @Expose
-    private List<Image> images = null;
+    private List<String> images = null;
     @SerializedName("available_markets")
     @Expose
     private List<String> availableMarkets = null;
 
-    public Album(String name, List<Image> images, List<String> availableMarkets) {
+    public Album(String name, List<String> images, List<String> availableMarkets) {
         this.name = name;
         this.images = images;
         this.availableMarkets = availableMarkets;
@@ -33,11 +33,11 @@ public class Album implements Serializable {
         this.name = name;
     }
 
-    public List<Image> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

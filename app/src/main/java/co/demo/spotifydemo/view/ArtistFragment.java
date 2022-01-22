@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
+import co.demo.spotifydemo.model.adapter.ArtistRecyclerAdapter;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.viewmodel.ArtistViewModel;
 import co.demo.spotifydemo.R;
@@ -25,6 +27,7 @@ public class ArtistFragment extends Fragment {
     private ArtistViewModel mViewModel;
     private ArtistFragmentBinding binding;
     private View viewContext;
+    private ArtistRecyclerAdapter artistRecyclerAdapter;
 
     public static ArtistFragment newInstance() {
         return new ArtistFragment();
@@ -37,6 +40,12 @@ public class ArtistFragment extends Fragment {
                 .inflate(inflater, container, false);
         View view = binding.getRoot();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewContext = view;
     }
 
     @Override
@@ -79,17 +88,28 @@ public class ArtistFragment extends Fragment {
 
 
 
-//TODO: CG 20220119 DOCUMENTO DUMMY
-        mViewModel.getAllNotifications(Parameters.DOCUMENT_DUMMY);
+        //TODO: CG 20220122 DATA DUMMY
+        mViewModel.getAllArtistList();
 
-        rv_notification_inbox = viewContext.findViewById(R.id.rv_notification_inbox);
-        rv_notification_inbox.setHasFixedSize(true);
-        rv_notification_inbox.setLayoutManager(new LinearLayoutManager(getContext(),
+        binding.rvArtistList.setHasFixedSize(true);
+        binding.rvArtistList.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        notificationRecyclerAdapter = new NotificationRecyclerAdapter(getContext(), notificationList, this::onNotificationListener);
-        rv_notification_inbox.setAdapter(notificationRecyclerAdapter);
-        //listener
-        mViewModel.managerScrollLazy(rv_notification_inbox);
+        artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(),  mViewModel.artistList, this::onArtistListener, this::onAlbumListener);
+                binding.rvArtistList.setAdapter(artistRecyclerAdapter);
+    }
+
+    private void onAlbumListener(int position) {
+        Toast.makeText(requireActivity(), "Album: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    private void onArtistListener(int position) {
+        Toast.makeText(requireActivity(), "artist: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
 }
