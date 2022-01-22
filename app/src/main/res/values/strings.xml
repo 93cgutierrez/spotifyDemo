@@ -2,7 +2,7 @@
     <string name="app_name">spotifyDemo</string>
     <string name="description_artist_image">artist image</string>
     <string name="value_dummy_tv_artist_name">Juan Luis Guerra</string>
-    <string name="title_followers">Followers</string>
+    <string name="title_followers">Followers: </string>
     <string name="tv_artist_followers_dummy">2679684</string>
     <string name="text_tv_title_artist_popularity">Popularity:</string>
 </resources>
