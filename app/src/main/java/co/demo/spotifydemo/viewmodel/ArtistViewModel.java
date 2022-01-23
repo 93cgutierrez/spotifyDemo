@@ -143,7 +143,7 @@ public class ArtistViewModel extends ViewModel {
                                                                     }
                                                                     getAlbumsByArtistID(context, result.body().getArtists().getItems().get(0).getId());
                                                                 }
-                                                            },true);
+                                                            }, true);
                                                     return;
                                                 }
                                                 getAlbumsByArtistID(context, result.body().getArtists().getItems().get(0).getId());
@@ -197,7 +197,7 @@ public class ArtistViewModel extends ViewModel {
                                                             itemAlbum.getExternalUrls().getSpotify());
                                                     albums.add(album);
                                                 }
-                                                if(artist != null) {
+                                                if (artist != null) {
                                                     artist.setAlbums(albums);
                                                     artistResult.postValue(artist);
                                                 } else {
@@ -267,7 +267,7 @@ public class ArtistViewModel extends ViewModel {
     public void showEmptyMessage(ArtistFragmentBinding binding, boolean showEmptyMessage) {
         binding.layoutEmptyState.getRoot().setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
         //modifica texto
-        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
+        ImageView iv_empty_state_icon = (ImageView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.iv_empty_state_icon);
         TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.tv_empty_state_message);
@@ -281,12 +281,12 @@ public class ArtistViewModel extends ViewModel {
     public void showErrorMessage(ArtistFragmentBinding binding, boolean showError, String errorMessage) {
         binding.layoutEmptyState.getRoot().setVisibility(showError ? View.VISIBLE : View.GONE);
         //modifica texto
-        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
+        ImageView iv_empty_state_icon = (ImageView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.iv_empty_state_icon);
         TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.tv_empty_state_message);
         iv_empty_state_icon.setImageResource(R.drawable.ic_baseline_error_24);
-        tv_empty_state_message.setText(binding.getRoot().getContext().getString(R.string.msg_error)  + errorMessage);
+        tv_empty_state_message.setText(binding.getRoot().getContext().getString(R.string.msg_error) + errorMessage);
         binding.cpiLoading.setVisibility(showError ? View.GONE : View.VISIBLE);
         binding.rvArtistList.setVisibility(showError ? View.GONE : View.VISIBLE);
     }
@@ -295,7 +295,7 @@ public class ArtistViewModel extends ViewModel {
     public void showInitialMessage(ArtistFragmentBinding binding, boolean show) {
         binding.layoutEmptyState.getRoot().setVisibility(show ? View.VISIBLE : View.GONE);
         //modifica texto
-        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
+        ImageView iv_empty_state_icon = (ImageView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.iv_empty_state_icon);
         TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
                 .findViewById(R.id.tv_empty_state_message);
@@ -310,8 +310,8 @@ public class ArtistViewModel extends ViewModel {
         mQueryString = newText;
         mHandler.removeCallbacksAndMessages(null);
         mHandler.postDelayed(() -> {
-            if(!mQueryString.isEmpty()
-                    && !mQueryString.replaceAll("\\s","").isEmpty()) {
+            if (!mQueryString.isEmpty()
+                    && !mQueryString.replaceAll("\\s", "").isEmpty()) {
                 validateNetworkBySearchQuery(context);
             } else {
                 //isEmptyArtistList.postValue(true);
@@ -330,7 +330,7 @@ public class ArtistViewModel extends ViewModel {
                             }
                             searchArtists(activity, mQueryString);
                         }
-                    },true);
+                    }, true);
             return;
         }
         searchArtists(activity, mQueryString);
