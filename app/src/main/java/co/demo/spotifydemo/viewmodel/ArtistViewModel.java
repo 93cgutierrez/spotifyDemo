@@ -23,6 +23,7 @@ import co.demo.spotifydemo.model.intermediary.ItemAlbum;
 import co.demo.spotifydemo.model.intermediary.ItemArtist;
 import co.demo.spotifydemo.model.repository.AlbumRepository;
 import co.demo.spotifydemo.model.repository.ArtistRepository;
+import co.demo.spotifydemo.util.SingleLiveEvent;
 import co.demo.spotifydemo.util.UtilPreference;
 import co.demo.spotifydemo.view.ArtistFragment;
 import co.demo.spotifydemo.view.ArtistFragmentDirections;
@@ -37,45 +38,45 @@ public class ArtistViewModel extends ViewModel {
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final ArtistRepository artistRepository = new ArtistRepository();
     private final AlbumRepository albumRepository = new AlbumRepository();
-    
+
     //loading
-    private MutableLiveData<Boolean> isViewLoading = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> isViewLoading = new SingleLiveEvent<>();
     private Artist artist;
     private NavController navController;
 
     public LiveData<Boolean> isViewLoading() {
         if (isViewLoading == null) {
-            isViewLoading = new MutableLiveData<>();
+            isViewLoading = new SingleLiveEvent<>();
         }
         return isViewLoading;
     }
 
     //data list<Artist>
-    private MutableLiveData<Artist> artistResult = new MutableLiveData<>();
+    private SingleLiveEvent<Artist> artistResult = new SingleLiveEvent<>();
 
     public LiveData<Artist> getArtist() {
         if (artistResult == null) {
-            artistResult = new MutableLiveData<>();
+            artistResult = new SingleLiveEvent<>();
         }
         return artistResult;
     }
 
     //empty
-    private MutableLiveData<Boolean> isEmptyArtistList = new MutableLiveData<>();
+    private SingleLiveEvent<Boolean> isEmptyArtistList = new SingleLiveEvent<>();
 
     public LiveData<Boolean> isEmptyArtistList() {
         if (isEmptyArtistList == null) {
-            isEmptyArtistList = new MutableLiveData<>();
+            isEmptyArtistList = new SingleLiveEvent<>();
         }
         return isEmptyArtistList;
     }
 
     //Error
-    private MutableLiveData<String> onMessageError = new MutableLiveData<>();
+    private SingleLiveEvent<String> onMessageError = new SingleLiveEvent<>();
 
     public LiveData<String> getOnMessageError() {
         if (onMessageError == null) {
-            onMessageError = new MutableLiveData<>();
+            onMessageError = new SingleLiveEvent<>();
         }
         return onMessageError;
     }
@@ -90,7 +91,7 @@ public class ArtistViewModel extends ViewModel {
         availableMarkets.add("IT");
 
 
-        images.add(new Image(200,"https://dummyimage.com/600x400/e356e3/0011ff",200));
+        images.add(new Image(200, "https://dummyimage.com/600x400/e356e3/0011ff", 200));
         Album album = new Album("album 1", images, availableMarkets, "https://dummyimage.com/600x400/e356e3/0011ff");
         albums.add(album);
 
@@ -137,6 +138,12 @@ public class ArtistViewModel extends ViewModel {
                                     isViewLoading.postValue(false);
                                     if (throwable != null) {
                                         if (throwable instanceof HttpException) {
+                                            if (((HttpException) throwable).code() == 401) {
+                                                //TODO: CG 20220122 CERRARSESION
+                                                onMessageError.postValue("401");
+                                            } else {
+                                                onMessageError.postValue("ERROR API");
+                                            }
                                             onMessageError.postValue("ERROR API");
                                         } else {
                                             onMessageError.postValue(throwable.getMessage());
@@ -159,20 +166,25 @@ public class ArtistViewModel extends ViewModel {
                                     if (result.code() == 200
                                             && result.body() != null) {
                                         if (result.isSuccessful()) {
-                                                if (result.body().getItems() != null
-                                                        && result.body().getItems().size() > 0) {
-                                                    List<Album> albums = new ArrayList<>();
-                                                    for (ItemAlbum itemAlbum : result.body().getItems()) {
-                                                        Album album = new Album(itemAlbum.getName(), itemAlbum.getImages(),
-                                                                itemAlbum.getAvailableMarkets(),
-                                                                itemAlbum.getExternalUrls().getSpotify());
-                                                        albums.add(album);
-                                                    }
+                                            if (result.body().getItems() != null
+                                                    && result.body().getItems().size() > 0) {
+                                                List<Album> albums = new ArrayList<>();
+                                                for (ItemAlbum itemAlbum : result.body().getItems()) {
+                                                    Album album = new Album(itemAlbum.getName(), itemAlbum.getImages(),
+                                                            itemAlbum.getAvailableMarkets(),
+                                                            itemAlbum.getExternalUrls().getSpotify());
+                                                    albums.add(album);
+                                                }
+                                                if(artist != null) {
                                                     artist.setAlbums(albums);
                                                     artistResult.postValue(artist);
                                                 } else {
-                                                    isEmptyArtistList.postValue(true);
+                                                    Log.d(TAG, "server error");
+                                                    throw new HttpException(result);
                                                 }
+                                            } else {
+                                                isEmptyArtistList.postValue(true);
+                                            }
                                         } else {
                                             Log.d(TAG, "server error");
                                             throw new HttpException(result);
@@ -185,7 +197,12 @@ public class ArtistViewModel extends ViewModel {
                                     isViewLoading.postValue(false);
                                     if (throwable != null) {
                                         if (throwable instanceof HttpException) {
-                                            onMessageError.postValue("ERROR API");
+                                            if (((HttpException) throwable).code() == 401) {
+                                                //TODO: CG 20220122 CERRARSESION
+                                                onMessageError.postValue("401");
+                                            } else {
+                                                onMessageError.postValue("ERROR API");
+                                            }
                                         } else {
                                             onMessageError.postValue(throwable.getMessage());
                                         }

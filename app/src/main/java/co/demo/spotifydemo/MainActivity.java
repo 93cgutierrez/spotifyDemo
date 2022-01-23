@@ -2,6 +2,7 @@ package co.demo.spotifydemo;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.blongho.country_data.World;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+
+import java.util.Objects;
 
 import co.demo.spotifydemo.databinding.ActivityMainBinding;
 import co.demo.spotifydemo.util.Parameters;
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         navController = navHostFragment.getNavController();
         //up level
         appBarConfiguration =
-                new AppBarConfiguration.Builder(navController.getGraph())
+                new AppBarConfiguration.Builder(R.id.loginFragment, R.id.artistFragment)
                         .build();
         // NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.tbToolbar, navController, appBarConfiguration);
@@ -65,13 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }*/
         });
         World.init(getApplicationContext());
-        if(UtilPreference.getToken(this) != null) {
-            //ir a pantalla principal
-
-        } else {
-            //ir a pantalla de login
-
-        }
     }
 
     @Override
@@ -82,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
             mAccessToken = response.getAccessToken();
             UtilPreference.saveToken(this, mAccessToken);
             updateTokenView();
+            for (Fragment fragment : Objects.requireNonNull(getSupportFragmentManager().getPrimaryNavigationFragment())
+                    .getChildFragmentManager().getFragments())
+            {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,13 +56,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void initUI() {
-        if(UtilPreference.getToken(requireActivity()) != null) {
-            //ir a pantalla principal
-            if (navController == null) {
-                navController = Navigation.findNavController(viewContext);
-            }
-            navController.navigate(R.id.action_loginFragment_to_artistFragment);
-        }
+        mViewModel.validateToken(requireActivity(), viewContext);
         binding.btnAuthorize.setOnClickListener(v -> mViewModel.onAuthorizeClick(requireActivity()));
         binding.btnClearCache.setOnClickListener(v -> mViewModel.onClearCredentialsClick(getContext()));
     }
@@ -74,7 +69,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Toast.makeText(requireActivity(), "token: login" , Toast.LENGTH_SHORT).show();
+        mViewModel.goToArtistFragment(viewContext);
     }
 
     @Override

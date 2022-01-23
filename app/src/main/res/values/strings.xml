@@ -9,6 +9,7 @@
     <string name="value_dummy_tv_album_name">ALBUM 100</string>
     <string name="tv_country_name_dummy">AC</string>
     <string name="msg_empty_filter">No results found, please mayor again</string>
+    <string name="msg_error">Error: </string>
     <string name="item_menu_search">search</string>
     <string name="item_menu_logout">logout</string>
     <string name="title_btn_go_to_spotify">Ir a Spotify</string>

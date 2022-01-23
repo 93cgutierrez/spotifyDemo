@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,13 +19,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
 import co.demo.spotifydemo.model.adapter.ArtistRecyclerAdapter;
 import co.demo.spotifydemo.model.data.Artist;
+import co.demo.spotifydemo.util.DelayedOnQueryTextListener;
+import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.viewmodel.ArtistViewModel;
 import co.demo.spotifydemo.R;
 
@@ -34,6 +40,8 @@ public class ArtistFragment extends Fragment {
     private ArtistFragmentBinding binding;
     private View viewContext;
     private ArtistRecyclerAdapter artistRecyclerAdapter;
+    private String mQueryString;
+    private Handler mHandler = new Handler();
 
     public static ArtistFragment newInstance() {
         return new ArtistFragment();
@@ -95,7 +103,11 @@ public class ArtistFragment extends Fragment {
     }
 
     private void getOnMessageErrorObserver(String errorMessage) {
-        showErrorMessage(true);
+        showErrorMessage(true, errorMessage);
+        if(Objects.equals(errorMessage, "401")) {
+            Toast.makeText(getContext(), "Usuario no autorizado", Toast.LENGTH_SHORT).show();
+            mViewModel.logout(requireActivity(), viewContext);
+        }
     }
 
     private void isLoadingObserver(Boolean showLoading) {
@@ -106,20 +118,33 @@ public class ArtistFragment extends Fragment {
     private void showLoading(boolean showLoading) {
             binding.cpiLoading.setVisibility(showLoading ? View.VISIBLE : View.GONE);
             binding.rvArtistList.setVisibility(showLoading ? View.GONE : View.VISIBLE);
-            binding.layoutEmptyState.getRoot().setVisibility(showLoading ? View.VISIBLE : View.GONE);
+            binding.layoutEmptyState.getRoot().setVisibility(showLoading ? View.GONE : View.VISIBLE);
     }
 
-    private void showErrorMessage(boolean showError) {
+    @SuppressLint("SetTextI18n")
+    private void showErrorMessage(boolean showError, String errorMessage) {
         binding.layoutEmptyState.getRoot().setVisibility(showError ? View.VISIBLE : View.GONE);
         //modifica texto
-        binding.cpiLoading.setVisibility(showError ? View.VISIBLE : View.GONE);
+        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
+                .findViewById(R.id.iv_empty_state_icon);
+        TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
+                .findViewById(R.id.tv_empty_state_message);
+        iv_empty_state_icon.setImageResource(R.drawable.ic_baseline_error_24);
+        tv_empty_state_message.setText(getString(R.string.msg_error)  + errorMessage);
+        binding.cpiLoading.setVisibility(showError ? View.GONE : View.VISIBLE);
         binding.rvArtistList.setVisibility(showError ? View.GONE : View.VISIBLE);
     }
 
     private void showEmptyMessage(boolean showEmptyMessage) {
         binding.layoutEmptyState.getRoot().setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
         //modifica texto
-        binding.cpiLoading.setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
+        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
+                .findViewById(R.id.iv_empty_state_icon);
+        TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
+                .findViewById(R.id.tv_empty_state_message);
+        iv_empty_state_icon.setImageResource(R.drawable.ic_baseline_all_inbox_24);
+        tv_empty_state_message.setText(R.string.msg_empty_filter);
+        binding.cpiLoading.setVisibility(showEmptyMessage ? View.GONE : View.VISIBLE);
         binding.rvArtistList.setVisibility(showEmptyMessage ? View.GONE : View.VISIBLE);
     }
 
@@ -164,8 +189,17 @@ public class ArtistFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d(TAG, "onQueryTextChange: " + newText);
-                mViewModel.searchArtists(getContext(), newText);
+                Log.d(TAG, "onQueryTextChange1: " + newText);
+                mQueryString = newText;
+                mHandler.removeCallbacksAndMessages(null);
+                mHandler.postDelayed(() -> {
+                    if(!mQueryString.isEmpty()) {
+                        Log.d(TAG, "onQueryTextChange2: " + newText);
+                        mViewModel.searchArtists(getContext(), mQueryString);
+                    } else {
+                        isEmptyArtistListObserver(true);
+                    }
+                }, Parameters.DELAY_ON_QUERY_TEXT_CHANGE);
                 return false;
             }
         });
