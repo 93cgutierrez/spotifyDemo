@@ -6,12 +6,17 @@ import android.net.Uri;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.Glide;
+
+import java.util.List;
+
+import co.demo.spotifydemo.R;
+import co.demo.spotifydemo.databinding.AlbumFragmentBinding;
 import co.demo.spotifydemo.model.data.Album;
-import io.reactivex.disposables.CompositeDisposable;
+import co.demo.spotifydemo.model.intermediary.Image;
 
 public class AlbumViewModel extends ViewModel {
     private static final String TAG = AlbumViewModel.class.getCanonicalName();
-    private final CompositeDisposable disposables = new CompositeDisposable();
 
 
     public void goToSpotify(FragmentActivity activity, Album albumRecieved) {
@@ -22,8 +27,15 @@ public class AlbumViewModel extends ViewModel {
         activity.startActivity(intent);
     }
 
-    @Override
-    protected void onCleared() {
-        disposables.clear();
+    public void setTitleFragment(FragmentActivity context, String title) {
+        context.setTitle(title);
+    }
+
+    public void setAlbumImage(AlbumFragmentBinding binding, List<Image> images) {
+        Glide.with(binding.getRoot().getContext())
+                .load(images.get(0).getUrl())
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(binding.ivAlbumImage);
     }
 }

@@ -115,44 +115,5 @@ public class Artists implements Serializable
         this.total = total;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Artists.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("href");
-        sb.append('=');
-        sb.append(((this.href == null)?"<null>":this.href));
-        sb.append(',');
-        sb.append("items");
-        sb.append('=');
-        sb.append(((this.itemArtists == null)?"<null>":this.itemArtists));
-        sb.append(',');
-        sb.append("limit");
-        sb.append('=');
-        sb.append(((this.limit == null)?"<null>":this.limit));
-        sb.append(',');
-        sb.append("next");
-        sb.append('=');
-        sb.append(((this.next == null)?"<null>":this.next));
-        sb.append(',');
-        sb.append("offset");
-        sb.append('=');
-        sb.append(((this.offset == null)?"<null>":this.offset));
-        sb.append(',');
-        sb.append("previous");
-        sb.append('=');
-        sb.append(((this.previous == null)?"<null>":this.previous));
-        sb.append(',');
-        sb.append("total");
-        sb.append('=');
-        sb.append(((this.total == null)?"<null>":this.total));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
-    }
 
 }

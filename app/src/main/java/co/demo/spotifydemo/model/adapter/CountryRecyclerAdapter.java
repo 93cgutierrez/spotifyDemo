@@ -5,10 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blongho.country_data.Country;
 import com.blongho.country_data.World;
 import com.bumptech.glide.Glide;
 
@@ -18,9 +18,9 @@ import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.CountryListItemBinding;
 
 public class CountryRecyclerAdapter extends RecyclerView.Adapter<CountryRecyclerAdapter.ViewHolderCountry> {
-    private static String TAG = CountryRecyclerAdapter.class.getCanonicalName();
-    private List<String> countryList;
-    private Context context;
+    private final static String TAG = CountryRecyclerAdapter.class.getCanonicalName();
+    private final List<String> countryList;
+    private final Context context;
 
     public CountryRecyclerAdapter(Context context,
                                   List<String> countryList) {
@@ -51,7 +51,7 @@ public class CountryRecyclerAdapter extends RecyclerView.Adapter<CountryRecycler
     }
 
     public static class ViewHolderCountry extends RecyclerView.ViewHolder{
-        private CountryListItemBinding binding;
+        private final CountryListItemBinding binding;
 
         public ViewHolderCountry(@NonNull CountryListItemBinding binding) {
             super(binding.getRoot());

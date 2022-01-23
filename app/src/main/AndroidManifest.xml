@@ -17,13 +17,12 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.VIEW"/>
-
+            </intent-filter>
+            <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                // this needs to match the scheme and host of the redirect URI as defined in My applications page
                 <data
                     android:host="callback"
                     android:scheme="https"/>

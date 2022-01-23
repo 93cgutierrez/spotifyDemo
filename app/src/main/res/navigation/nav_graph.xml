@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/artistFragment"
         android:name="co.demo.spotifydemo.view.ArtistFragment"
-        android:label="artist_fragment"
-        tools:layout="@layout/artist_fragment" >
+        android:label="@string/title_artistic_fragment"
+        tools:layout="@layout/artist_fragment">
         <action
             android:id="@+id/action_artistFragment_to_albumFragment"
             app:destination="@id/albumFragment" />
@@ -23,8 +23,8 @@
     <fragment
         android:id="@+id/albumFragment"
         android:name="co.demo.spotifydemo.view.AlbumFragment"
-        android:label="album_fragment"
-        tools:layout="@layout/album_fragment" >
+        android:label="@string/title_album_fragment"
+        tools:layout="@layout/album_fragment">
         <argument
             android:name="albumSelected"
             app:argType="co.demo.spotifydemo.model.data.Album" />
@@ -32,8 +32,8 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="co.demo.spotifydemo.view.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        android:label="@string/title_login_fragment"
+        tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_loginFragment_to_artistFragment"
             app:destination="@id/artistFragment"

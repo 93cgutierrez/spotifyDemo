@@ -1,16 +1,7 @@
 package co.demo.spotifydemo.view;
 
-import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,20 +10,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.List;
 import java.util.Objects;
 
+import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
+import co.demo.spotifydemo.databinding.ArtistListItemBinding;
 import co.demo.spotifydemo.model.adapter.ArtistRecyclerAdapter;
+import co.demo.spotifydemo.model.data.Album;
 import co.demo.spotifydemo.model.data.Artist;
-import co.demo.spotifydemo.util.DelayedOnQueryTextListener;
 import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.viewmodel.ArtistViewModel;
-import co.demo.spotifydemo.R;
 
 public class ArtistFragment extends Fragment {
     private static final String TAG = ArtistFragment.class.getCanonicalName();
@@ -41,11 +38,8 @@ public class ArtistFragment extends Fragment {
     private View viewContext;
     private ArtistRecyclerAdapter artistRecyclerAdapter;
     private String mQueryString;
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
-    public static ArtistFragment newInstance() {
-        return new ArtistFragment();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +52,7 @@ public class ArtistFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = ArtistFragmentBinding
                 .inflate(inflater, container, false);
-        View view = binding.getRoot();
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -72,8 +65,6 @@ public class ArtistFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
-        //todo: cg 20220122 editar
-        requireActivity().setTitle("HOLAAAA");
         if (binding != null && viewContext != null) {
             initUI();
             subscribeEvents();
@@ -85,12 +76,21 @@ public class ArtistFragment extends Fragment {
         mViewModel.getOnMessageError().observe(getViewLifecycleOwner(), this::getOnMessageErrorObserver);
         mViewModel.isEmptyArtistList().observe(getViewLifecycleOwner(), this::isEmptyArtistListObserver);
         mViewModel.getArtist().observe(getViewLifecycleOwner(), this::getArtistObserver);
+        mViewModel.isEmptyAlbums().observe(getViewLifecycleOwner(), this::isEmptyAlbumsObserver);
+        mViewModel.getAlbums().observe(getViewLifecycleOwner(), this::getAlbumsObserver);
+    }
+
+    private void getAlbumsObserver(List<Album> albums) {
+
+    }
+
+    private void isEmptyAlbumsObserver(Boolean isEmpty) {
 
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void getArtistObserver(Artist artist) {
-        if(artist != null) {
+        if (artist != null) {
             mViewModel.artistList.clear();
             mViewModel.artistList.add(artist);
             artistRecyclerAdapter.notifyDataSetChanged();
@@ -99,80 +99,52 @@ public class ArtistFragment extends Fragment {
 
 
     private void isEmptyArtistListObserver(Boolean isEmpty) {
-        showEmptyMessage(isEmpty);
+        mViewModel.showEmptyMessage(binding, isEmpty);
     }
 
     private void getOnMessageErrorObserver(String errorMessage) {
-        showErrorMessage(true, errorMessage);
-        if(Objects.equals(errorMessage, "401")) {
-            Toast.makeText(getContext(), "Usuario no autorizado", Toast.LENGTH_SHORT).show();
+        mViewModel.showErrorMessage(binding, true, errorMessage);
+        if (Objects.equals(errorMessage, Parameters.INVALID_TOKEN)) {
+            Toast.makeText(getContext(), R.string.msg_token_invalid, Toast.LENGTH_SHORT).show();
             mViewModel.logout(requireActivity(), viewContext);
         }
     }
 
     private void isLoadingObserver(Boolean showLoading) {
-        showLoading(showLoading);
-    }
-
-    //show loading
-    private void showLoading(boolean showLoading) {
-            binding.cpiLoading.setVisibility(showLoading ? View.VISIBLE : View.GONE);
-            binding.rvArtistList.setVisibility(showLoading ? View.GONE : View.VISIBLE);
-            binding.layoutEmptyState.getRoot().setVisibility(showLoading ? View.GONE : View.VISIBLE);
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void showErrorMessage(boolean showError, String errorMessage) {
-        binding.layoutEmptyState.getRoot().setVisibility(showError ? View.VISIBLE : View.GONE);
-        //modifica texto
-        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
-                .findViewById(R.id.iv_empty_state_icon);
-        TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
-                .findViewById(R.id.tv_empty_state_message);
-        iv_empty_state_icon.setImageResource(R.drawable.ic_baseline_error_24);
-        tv_empty_state_message.setText(getString(R.string.msg_error)  + errorMessage);
-        binding.cpiLoading.setVisibility(showError ? View.GONE : View.VISIBLE);
-        binding.rvArtistList.setVisibility(showError ? View.GONE : View.VISIBLE);
-    }
-
-    private void showEmptyMessage(boolean showEmptyMessage) {
-        binding.layoutEmptyState.getRoot().setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
-        //modifica texto
-        ImageView iv_empty_state_icon  = (ImageView) binding.layoutEmptyState.getRoot()
-                .findViewById(R.id.iv_empty_state_icon);
-        TextView tv_empty_state_message = (TextView) binding.layoutEmptyState.getRoot()
-                .findViewById(R.id.tv_empty_state_message);
-        iv_empty_state_icon.setImageResource(R.drawable.ic_baseline_all_inbox_24);
-        tv_empty_state_message.setText(R.string.msg_empty_filter);
-        binding.cpiLoading.setVisibility(showEmptyMessage ? View.GONE : View.VISIBLE);
-        binding.rvArtistList.setVisibility(showEmptyMessage ? View.GONE : View.VISIBLE);
+        mViewModel.showLoading(binding, showLoading);
     }
 
     private void initUI() {
-        //TODO: CG 20220122 DATA DUMMY
-        mViewModel.getAllArtistList();
-
         binding.rvArtistList.setHasFixedSize(true);
         binding.rvArtistList.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(),  mViewModel.artistList, this::onArtistListener, this::onAlbumListener);
-                binding.rvArtistList.setAdapter(artistRecyclerAdapter);
+        artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(), mViewModel.artistList, this::onArtistListener, this::onAlbumListener,
+                this::onAlbumExpandListener);
+        binding.rvArtistList.setAdapter(artistRecyclerAdapter);
+        //listener for scroll
+        mViewModel.managerScrollLazy(requireActivity(),
+                artistRecyclerAdapter.getArtistListItemBinding());
+        if (mViewModel.artistList.size() == 0) {
+            mViewModel.showInitialMessage(binding, true);
+        }
+    }
+
+    private void onAlbumExpandListener(ArtistListItemBinding binding, View view, int position) {
+        Log.d(TAG, "onAlbumExpandListener: " + position);
+        mViewModel.showHideAlbums(requireActivity(), binding);
     }
 
     private void onAlbumListener(int position) {
-        Toast.makeText(requireActivity(), "Album: " + position, Toast.LENGTH_SHORT).show();
         mViewModel.goToSpotify(viewContext, position);
     }
 
     private void onArtistListener(int position) {
-        Toast.makeText(requireActivity(), "artist: " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.artistic_fragment_menu, menu);
-
     }
 
     @Override
@@ -183,23 +155,13 @@ public class ArtistFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d(TAG, "onQueryTextSubmit: " + query);
+                mViewModel.searchViewOnQueryTextChangeAndSubmit(requireActivity(), query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d(TAG, "onQueryTextChange1: " + newText);
-                mQueryString = newText;
-                mHandler.removeCallbacksAndMessages(null);
-                mHandler.postDelayed(() -> {
-                    if(!mQueryString.isEmpty()) {
-                        Log.d(TAG, "onQueryTextChange2: " + newText);
-                        mViewModel.searchArtists(getContext(), mQueryString);
-                    } else {
-                        isEmptyArtistListObserver(true);
-                    }
-                }, Parameters.DELAY_ON_QUERY_TEXT_CHANGE);
+                mViewModel.searchViewOnQueryTextChangeAndSubmit(requireActivity(), newText);
                 return false;
             }
         });

@@ -22,21 +22,25 @@ import co.demo.spotifydemo.model.data.Artist;
 
 public class ArtistRecyclerAdapter
         extends RecyclerView.Adapter<ArtistRecyclerAdapter.ViewHolderArtist> {
-    private static String TAG = ArtistRecyclerAdapter.class.getCanonicalName();
-    private List<Artist> artistList;
-    private Context context;
-    private OnArtistListener mOnArtistListener;
-    private AlbumRecyclerAdapter.OnAlbumListener mOnAlbumListener;
-    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private static final String TAG = ArtistRecyclerAdapter.class.getCanonicalName();
+    private final List<Artist> artistList;
+    private final Context context;
+    private final OnArtistListener mOnArtistListener;
+    private final OnAlbumExpandListener mOnAlbumExpandListener;
+    private final AlbumRecyclerAdapter.OnAlbumListener mOnAlbumListener;
+    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private ArtistListItemBinding binding;
 
     public ArtistRecyclerAdapter(Context context,
                                  List<Artist> artistList,
                                  OnArtistListener onArtistListener,
-                                 AlbumRecyclerAdapter.OnAlbumListener onAlbumListener) {
+                                 AlbumRecyclerAdapter.OnAlbumListener onAlbumListener,
+                                 OnAlbumExpandListener mOnAlbumExpandListener) {
         this.context = context;
         this.artistList = artistList;
         this.mOnArtistListener = onArtistListener;
         this.mOnAlbumListener = onAlbumListener;
+        this.mOnAlbumExpandListener = mOnAlbumExpandListener;
     }
 
     @NonNull
@@ -44,10 +48,9 @@ public class ArtistRecyclerAdapter
     public ViewHolderArtist onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater =
                 LayoutInflater.from(parent.getContext());
-        ArtistListItemBinding binding =
-                ArtistListItemBinding.inflate(layoutInflater,
+        binding = ArtistListItemBinding.inflate(layoutInflater,
                         parent, false);
-        return new ViewHolderArtist(binding, mOnArtistListener, mOnAlbumListener);
+        return new ViewHolderArtist(binding, mOnArtistListener, mOnAlbumListener, mOnAlbumExpandListener);
     }
 
     @Override
@@ -62,18 +65,22 @@ public class ArtistRecyclerAdapter
 
     public static class ViewHolderArtist extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        private ArtistListItemBinding binding;
+        private final ArtistListItemBinding binding;
         OnArtistListener onArtistListener;
         AlbumRecyclerAdapter.OnAlbumListener onAlbumListener;
+        OnAlbumExpandListener mOnAlbumExpandListener;
 
         public ViewHolderArtist(@NonNull ArtistListItemBinding binding,
                                 OnArtistListener onArtistListener,
-                                AlbumRecyclerAdapter.OnAlbumListener onAlbumListener) {
+                                AlbumRecyclerAdapter.OnAlbumListener onAlbumListener,
+                                OnAlbumExpandListener mOnAlbumExpandListener) {
             super(binding.getRoot());
             this.binding = binding;
             this.onArtistListener = onArtistListener;
             binding.cvArtistItem.setOnClickListener(this);
             this.onAlbumListener = onAlbumListener;
+            binding.llArtistAlbumDropdown.setOnClickListener(this);
+            this.mOnAlbumExpandListener = mOnAlbumExpandListener;
         }
 
         @SuppressLint("SetTextI18n")
@@ -110,12 +117,25 @@ public class ArtistRecyclerAdapter
         @Override
         public void onClick(View view) {
             Log.d(TAG, "onClick: " + view.getContext());
-            onArtistListener.onArtistListener(getLayoutPosition());
+            if(view.getId() == R.id.cv_artist_item) {
+                onArtistListener.onArtistListener(getLayoutPosition());
+            } else if(view.getId() == R.id.ll_artist_album_dropdown) {
+                mOnAlbumExpandListener.onAlbumExpandListener(binding, view, getLayoutPosition());
+            }
+
         }
     }
 
     public interface OnArtistListener {
         void onArtistListener(int position);
+    }
+
+    public interface OnAlbumExpandListener {
+        void onAlbumExpandListener(ArtistListItemBinding binding, View view, int position);
+    }
+
+    public ArtistListItemBinding getArtistListItemBinding() {
+        return this.binding;
     }
 
 }
