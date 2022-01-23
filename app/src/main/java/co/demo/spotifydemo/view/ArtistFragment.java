@@ -104,8 +104,8 @@ public class ArtistFragment extends Fragment {
 
     private void getOnMessageErrorObserver(String errorMessage) {
         showErrorMessage(true, errorMessage);
-        if(Objects.equals(errorMessage, "401")) {
-            Toast.makeText(getContext(), "Usuario no autorizado", Toast.LENGTH_SHORT).show();
+        if(Objects.equals(errorMessage, Parameters.INVALID_TOKEN)) {
+            Toast.makeText(getContext(), R.string.msg_token_invalid, Toast.LENGTH_SHORT).show();
             mViewModel.logout(requireActivity(), viewContext);
         }
     }

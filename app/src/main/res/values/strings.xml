@@ -13,4 +13,5 @@
     <string name="item_menu_search">search</string>
     <string name="item_menu_logout">logout</string>
     <string name="title_btn_go_to_spotify">Ir a Spotify</string>
+    <string name="msg_token_invalid">Token vencido</string>
 </resources>

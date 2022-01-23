@@ -23,6 +23,7 @@ import co.demo.spotifydemo.model.intermediary.ItemAlbum;
 import co.demo.spotifydemo.model.intermediary.ItemArtist;
 import co.demo.spotifydemo.model.repository.AlbumRepository;
 import co.demo.spotifydemo.model.repository.ArtistRepository;
+import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.util.SingleLiveEvent;
 import co.demo.spotifydemo.util.UtilPreference;
 import co.demo.spotifydemo.view.ArtistFragment;
@@ -139,12 +140,10 @@ public class ArtistViewModel extends ViewModel {
                                     if (throwable != null) {
                                         if (throwable instanceof HttpException) {
                                             if (((HttpException) throwable).code() == 401) {
-                                                //TODO: CG 20220122 CERRARSESION
-                                                onMessageError.postValue("401");
+                                                onMessageError.postValue(Parameters.INVALID_TOKEN);
                                             } else {
-                                                onMessageError.postValue("ERROR API");
+                                                onMessageError.postValue(Parameters.ERROR_SERVER);
                                             }
-                                            onMessageError.postValue("ERROR API");
                                         } else {
                                             onMessageError.postValue(throwable.getMessage());
                                         }
@@ -198,10 +197,9 @@ public class ArtistViewModel extends ViewModel {
                                     if (throwable != null) {
                                         if (throwable instanceof HttpException) {
                                             if (((HttpException) throwable).code() == 401) {
-                                                //TODO: CG 20220122 CERRARSESION
-                                                onMessageError.postValue("401");
+                                                onMessageError.postValue(Parameters.INVALID_TOKEN);
                                             } else {
-                                                onMessageError.postValue("ERROR API");
+                                                onMessageError.postValue(Parameters.ERROR_SERVER);
                                             }
                                         } else {
                                             onMessageError.postValue(throwable.getMessage());
