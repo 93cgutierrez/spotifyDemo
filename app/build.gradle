@@ -4,6 +4,8 @@ plugins {
 
 apply plugin: "androidx.navigation.safeargs"
 
+def CLIENT_ID = '"' + CLIENT_ID + '"' ?: '"NoCLIENT_ID"'
+
 android {
     compileSdk 32
 
@@ -15,6 +17,13 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        each { type ->
+            type.resValue 'string', 'CLIENT_ID', CLIENT_ID
+            type.buildConfigField 'String', 'CLIENT_ID', CLIENT_ID
+        }
+        manifestPlaceholders = [
+                CLIENT_ID : CLIENT_ID
+        ]
     }
 
     buildTypes {

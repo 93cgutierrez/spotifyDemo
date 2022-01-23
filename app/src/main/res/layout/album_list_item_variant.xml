@@ -51,7 +51,6 @@
                 tools:ignore="RtlCompat" />
 
 
-            <!--TODO: CG 20220122 ADD RECYCLERVIEW COUNTRIES-->
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_country_list"
                             android:layout_width="0dp"

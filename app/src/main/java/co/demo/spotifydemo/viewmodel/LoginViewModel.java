@@ -16,6 +16,7 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import co.demo.spotifydemo.BuildConfig;
 import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.util.DialogUtil;
@@ -94,7 +95,8 @@ public class LoginViewModel extends ViewModel {
 
 
     private AuthorizationRequest getAuthenticationRequest() {
-        return new AuthorizationRequest.Builder(Parameters.CLIENT_ID, AuthorizationResponse.Type.TOKEN, getRedirectUri().toString())
+        return new AuthorizationRequest.Builder(BuildConfig.CLIENT_ID,
+                AuthorizationResponse.Type.TOKEN, getRedirectUri().toString())
                 .setShowDialog(true)
                 .setScopes(new String[]{})
                 .build();
