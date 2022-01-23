@@ -37,20 +37,5 @@ public class ExternalUrls implements Serializable
         this.spotify = spotify;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ExternalUrls.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("spotify");
-        sb.append('=');
-        sb.append(((this.spotify == null)?"<null>":this.spotify));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
-    }
 
 }

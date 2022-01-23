@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.widget.SearchView;
 
 public abstract class DelayedOnQueryTextListener implements SearchView.OnQueryTextListener {
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable runnable;
 
     @Override

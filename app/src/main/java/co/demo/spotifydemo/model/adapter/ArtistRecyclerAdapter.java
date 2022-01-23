@@ -22,12 +22,12 @@ import co.demo.spotifydemo.model.data.Artist;
 
 public class ArtistRecyclerAdapter
         extends RecyclerView.Adapter<ArtistRecyclerAdapter.ViewHolderArtist> {
-    private static String TAG = ArtistRecyclerAdapter.class.getCanonicalName();
-    private List<Artist> artistList;
-    private Context context;
-    private OnArtistListener mOnArtistListener;
-    private AlbumRecyclerAdapter.OnAlbumListener mOnAlbumListener;
-    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private static final String TAG = ArtistRecyclerAdapter.class.getCanonicalName();
+    private final List<Artist> artistList;
+    private final Context context;
+    private final OnArtistListener mOnArtistListener;
+    private final AlbumRecyclerAdapter.OnAlbumListener mOnAlbumListener;
+    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     public ArtistRecyclerAdapter(Context context,
                                  List<Artist> artistList,
@@ -62,7 +62,7 @@ public class ArtistRecyclerAdapter
 
     public static class ViewHolderArtist extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        private ArtistListItemBinding binding;
+        private final ArtistListItemBinding binding;
         OnArtistListener onArtistListener;
         AlbumRecyclerAdapter.OnAlbumListener onAlbumListener;
 

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +19,11 @@ import co.demo.spotifydemo.databinding.AlbumListItemVariantBinding;
 import co.demo.spotifydemo.model.data.Album;
 
 public class AlbumRecyclerAdapter extends RecyclerView.Adapter<AlbumRecyclerAdapter.ViewHolderAlbum> {
-    private String TAG = AlbumRecyclerAdapter.class.getCanonicalName();
-    private List<Album> albumList;
-    private Context context;
-    private OnAlbumListener mOnAlbumListener;
-    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private final String TAG = AlbumRecyclerAdapter.class.getCanonicalName();
+    private final List<Album> albumList;
+    private final Context context;
+    private final OnAlbumListener mOnAlbumListener;
+    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     public AlbumRecyclerAdapter(Context context,
                                 List<Album> albumList,
@@ -57,7 +56,7 @@ public class AlbumRecyclerAdapter extends RecyclerView.Adapter<AlbumRecyclerAdap
 
     public static class ViewHolderAlbum extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        private AlbumListItemVariantBinding binding;
+        private final AlbumListItemVariantBinding binding;
         OnAlbumListener onAlbumListener;
 
         public ViewHolderAlbum(@NonNull AlbumListItemVariantBinding binding, OnAlbumListener onAlbumListener) {

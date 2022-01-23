@@ -14,10 +14,10 @@ public class Album implements Serializable {
     private String name;
     @SerializedName("images")
     @Expose
-    private List<Image> images = null;
+    private List<Image> images;
     @SerializedName("available_markets")
     @Expose
-    private List<String> availableMarkets = null;
+    private List<String> availableMarkets;
     @SerializedName("spotify_url")
     @Expose
     private String url;

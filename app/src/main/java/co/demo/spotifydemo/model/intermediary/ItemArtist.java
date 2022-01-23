@@ -155,56 +155,5 @@ public class ItemArtist implements Serializable
         this.uri = uri;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ItemArtist.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("externalUrls");
-        sb.append('=');
-        sb.append(((this.externalUrls == null)?"<null>":this.externalUrls));
-        sb.append(',');
-        sb.append("followers");
-        sb.append('=');
-        sb.append(((this.followers == null)?"<null>":this.followers));
-        sb.append(',');
-        sb.append("genres");
-        sb.append('=');
-        sb.append(((this.genres == null)?"<null>":this.genres));
-        sb.append(',');
-        sb.append("href");
-        sb.append('=');
-        sb.append(((this.href == null)?"<null>":this.href));
-        sb.append(',');
-        sb.append("id");
-        sb.append('=');
-        sb.append(((this.id == null)?"<null>":this.id));
-        sb.append(',');
-        sb.append("images");
-        sb.append('=');
-        sb.append(((this.images == null)?"<null>":this.images));
-        sb.append(',');
-        sb.append("name");
-        sb.append('=');
-        sb.append(((this.name == null)?"<null>":this.name));
-        sb.append(',');
-        sb.append("popularity");
-        sb.append('=');
-        sb.append(((this.popularity == null)?"<null>":this.popularity));
-        sb.append(',');
-        sb.append("type");
-        sb.append('=');
-        sb.append(((this.type == null)?"<null>":this.type));
-        sb.append(',');
-        sb.append("uri");
-        sb.append('=');
-        sb.append(((this.uri == null)?"<null>":this.uri));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
-    }
 
 }

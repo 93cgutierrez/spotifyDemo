@@ -8,7 +8,7 @@ import io.reactivex.Observable;
 import retrofit2.Response;
 
 public class AlbumRepository {
-    private String TAG = AlbumRepository.class.getCanonicalName();
+    private final String TAG = AlbumRepository.class.getCanonicalName();
 
     //API
     public Observable<Response<AlbumResponse>> getAlbumsByArtistID(Context context, String artistId) {

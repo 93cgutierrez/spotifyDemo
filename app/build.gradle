@@ -94,9 +94,9 @@ dependencies {
     implementation files ('libs/spotify-app-remote-release-0.7.2.aar')
     implementation files ('libs/country_data')
     //implementation project(':spotify-app-remote')
-    implementation 'com.spotify.android:auth:1.2.5' // Maven dependency
+    implementation 'com.spotify.android:auth:1.2.6' // Maven dependency
 
     // All other dependencies for your app should also be here:
-    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.browser:browser:1.4.0'
     implementation project(':worldcountrydata')
 }
