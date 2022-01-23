@@ -2,14 +2,14 @@ package co.demo.spotifydemo.model.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blongho.country_data.Country;
+import com.blongho.country_data.World;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.CountryListItemBinding;
 
 public class CountryRecyclerAdapter extends RecyclerView.Adapter<CountryRecyclerAdapter.ViewHolderCountry> {
-    private String TAG = CountryRecyclerAdapter.class.getCanonicalName();
+    private static String TAG = CountryRecyclerAdapter.class.getCanonicalName();
     private List<String> countryList;
     private Context context;
 
@@ -62,13 +62,18 @@ public class CountryRecyclerAdapter extends RecyclerView.Adapter<CountryRecycler
         @SuppressLint("SetTextI18n")
         public void setDataCountry(Context context, String country) {
             binding.tvCountryName.setText(country);
-            //TODO: CG20220122 SETTER IV FLAG
-/*            Glide.with(context)
-                    .load(Country.getImages().get(0))
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .circleCrop()
-                    .into(binding.ivCountryImage);*/
+            try{
+                final int flag = World.getFlagOf(country);
+                Glide.with(context)
+                        .load(flag)
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .error(R.drawable.ic_launcher_background)
+                        .into(binding.ivCountryImage);
+            } catch (Exception e) {
+                binding.ivCountryImage.setImageResource(R.drawable.ic_launcher_background);
+                Log.e(TAG, "setDataCountry: ", e);
+            }
+
 
         }
     }

@@ -20,14 +20,14 @@ public class Artist implements Serializable {
     private Integer popularity;
     @SerializedName("images")
     @Expose
-    private List<String> images = null;
+    private List<Image> images = null;
 
     //another request
     @SerializedName("albums")
     @Expose
     private List<Album> albums = null;
 
-    public Artist(String name, Integer followers, Integer popularity, List<String> images, List<Album> albums) {
+    public Artist(String name, Integer followers, Integer popularity, List<Image> images, List<Album> albums) {
         this.name = name;
         this.followers = followers;
         this.popularity = popularity;
@@ -59,11 +59,11 @@ public class Artist implements Serializable {
         this.popularity = popularity;
     }
 
-    public List<String> getImages() {
+    public List<Image> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<Image> images) {
         this.images = images;
     }
 

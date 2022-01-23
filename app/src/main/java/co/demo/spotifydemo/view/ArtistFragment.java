@@ -3,6 +3,7 @@ package co.demo.spotifydemo.view;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -75,24 +76,51 @@ public class ArtistFragment extends Fragment {
         mViewModel.isViewLoading().observe(getViewLifecycleOwner(), this::isLoadingObserver);
         mViewModel.getOnMessageError().observe(getViewLifecycleOwner(), this::getOnMessageErrorObserver);
         mViewModel.isEmptyArtistList().observe(getViewLifecycleOwner(), this::isEmptyArtistListObserver);
-        mViewModel.getArtistList().observe(getViewLifecycleOwner(), this::getArtistListObserver);
+        mViewModel.getArtist().observe(getViewLifecycleOwner(), this::getArtistObserver);
 
     }
 
-    private void getArtistListObserver(List<Artist> artists) {
-
+    @SuppressLint("NotifyDataSetChanged")
+    private void getArtistObserver(Artist artist) {
+        if(artist != null) {
+            mViewModel.artistList.clear();
+            mViewModel.artistList.add(artist);
+            artistRecyclerAdapter.notifyDataSetChanged();
+        }
     }
+
 
     private void isEmptyArtistListObserver(Boolean isEmpty) {
-
+        showEmptyMessage(isEmpty);
     }
 
     private void getOnMessageErrorObserver(String errorMessage) {
-
+        showErrorMessage(true);
     }
 
     private void isLoadingObserver(Boolean showLoading) {
+        showLoading(showLoading);
+    }
 
+    //show loading
+    private void showLoading(boolean showLoading) {
+            binding.cpiLoading.setVisibility(showLoading ? View.VISIBLE : View.GONE);
+            binding.rvArtistList.setVisibility(showLoading ? View.GONE : View.VISIBLE);
+            binding.layoutEmptyState.getRoot().setVisibility(showLoading ? View.VISIBLE : View.GONE);
+    }
+
+    private void showErrorMessage(boolean showError) {
+        binding.layoutEmptyState.getRoot().setVisibility(showError ? View.VISIBLE : View.GONE);
+        //modifica texto
+        binding.cpiLoading.setVisibility(showError ? View.VISIBLE : View.GONE);
+        binding.rvArtistList.setVisibility(showError ? View.GONE : View.VISIBLE);
+    }
+
+    private void showEmptyMessage(boolean showEmptyMessage) {
+        binding.layoutEmptyState.getRoot().setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
+        //modifica texto
+        binding.cpiLoading.setVisibility(showEmptyMessage ? View.VISIBLE : View.GONE);
+        binding.rvArtistList.setVisibility(showEmptyMessage ? View.GONE : View.VISIBLE);
     }
 
     private void initUI() {
@@ -108,6 +136,7 @@ public class ArtistFragment extends Fragment {
 
     private void onAlbumListener(int position) {
         Toast.makeText(requireActivity(), "Album: " + position, Toast.LENGTH_SHORT).show();
+        mViewModel.goToSpotify(viewContext, position);
     }
 
     private void onArtistListener(int position) {
@@ -136,6 +165,7 @@ public class ArtistFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, "onQueryTextChange: " + newText);
+                mViewModel.searchArtists(getContext(), newText);
                 return false;
             }
         });
@@ -144,8 +174,9 @@ public class ArtistFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.action_toolbar_search) {
-            Log.d(TAG, "onOptionsItemSelected: ");
+        Log.d(TAG, "onOptionsItemSelected: " + itemId);
+        if (itemId == R.id.action_toolbar_logout) {
+            mViewModel.logout(getContext(), viewContext);
             return true;
         }
         return super.onOptionsItemSelected(item);

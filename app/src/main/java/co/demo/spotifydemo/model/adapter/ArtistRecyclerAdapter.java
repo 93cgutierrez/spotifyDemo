@@ -84,7 +84,7 @@ public class ArtistRecyclerAdapter
             binding.tvArtistFollowers.setText(artist.getFollowers().toString());
             binding.csbArtistPopularity.setProgressDisplay(artist.getPopularity());
             Glide.with(context)
-                    .load(artist.getImages().get(0))
+                    .load(artist.getImages().get(0).getUrl())
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .circleCrop()

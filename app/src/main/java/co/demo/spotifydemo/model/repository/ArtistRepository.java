@@ -1,5 +1,7 @@
 package co.demo.spotifydemo.model.repository;
 
+import android.content.Context;
+
 import co.demo.spotifydemo.io.SpotifyAdapter;
 import co.demo.spotifydemo.model.response.QueryResponse;
 import io.reactivex.Observable;
@@ -9,7 +11,7 @@ public class ArtistRepository {
     private String TAG = ArtistRepository.class.getCanonicalName();
 
     //API
-    public Observable<Response<QueryResponse>> searchArtists(String query) {
-        return SpotifyAdapter.getApiService().searchArtists(query);
+    public Observable<Response<QueryResponse>> searchArtists(Context context, String query) {
+        return SpotifyAdapter.getApiService(context).searchArtists(query);
     }
 }

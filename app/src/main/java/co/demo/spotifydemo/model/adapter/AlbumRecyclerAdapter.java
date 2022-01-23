@@ -74,10 +74,9 @@ public class AlbumRecyclerAdapter extends RecyclerView.Adapter<AlbumRecyclerAdap
                                  Album album) {
             binding.tvAlbumName.setText(album.getName());
             Glide.with(context)
-                    .load(album.getImages().get(0))
+                    .load(album.getImages().get(0).getUrl())
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
-                    .circleCrop()
                     .into(binding.ivAlbumImage);
 
             //setter list inside country

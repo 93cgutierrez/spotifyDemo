@@ -14,15 +14,19 @@ public class Album implements Serializable {
     private String name;
     @SerializedName("images")
     @Expose
-    private List<String> images = null;
+    private List<Image> images = null;
     @SerializedName("available_markets")
     @Expose
     private List<String> availableMarkets = null;
+    @SerializedName("spotify_url")
+    @Expose
+    private String url;
 
-    public Album(String name, List<String> images, List<String> availableMarkets) {
+    public Album(String name, List<Image> images, List<String> availableMarkets, String url) {
         this.name = name;
         this.images = images;
         this.availableMarkets = availableMarkets;
+        this.url = url;
     }
 
     public String getName() {
@@ -33,11 +37,11 @@ public class Album implements Serializable {
         this.name = name;
     }
 
-    public List<String> getImages() {
+    public List<Image> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<Image> images) {
         this.images = images;
     }
 
@@ -47,5 +51,13 @@ public class Album implements Serializable {
 
     public void setAvailableMarkets(List<String> availableMarkets) {
         this.availableMarkets = availableMarkets;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
