@@ -8,8 +8,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -351,7 +355,7 @@ public class ArtistViewModel extends ViewModel {
     public void showLoading(ArtistFragmentBinding binding, boolean showLoading) {
         binding.cpiLoading.setVisibility(showLoading ? View.VISIBLE : View.GONE);
         binding.rvArtistList.setVisibility(showLoading ? View.GONE : View.VISIBLE);
-        binding.layoutEmptyState.getRoot().setVisibility(showLoading ? View.GONE : View.VISIBLE);
+        binding.layoutEmptyState.getRoot().setVisibility(View.GONE);
     }
 
     public void showEmptyMessage(ArtistFragmentBinding binding, boolean showEmptyMessage) {
@@ -444,6 +448,26 @@ public class ArtistViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void showHideAlbums(Context context, ArtistListItemBinding binding) {
+        int isVisibilityAlbums = binding.rvAlbumList.getVisibility()
+                == View.GONE ? View.VISIBLE : View.GONE;
+        if (isVisibilityAlbums == View.GONE) {
+            Animation rotate = AnimationUtils.loadAnimation(context, R.anim.rotate);
+            binding.ivArtistAlbumDropdown.startAnimation(rotate);
+        } else {
+            Animation rotate = AnimationUtils.loadAnimation(context, R.anim.rotate_left);
+            binding.ivArtistAlbumDropdown.startAnimation(rotate);
+        }
+        binding.ivArtistAlbumDropdown.setBackground(context.getResources()
+                .getDrawable(isVisibilityAlbums == View.GONE
+                ? R.drawable.ic_baseline_arrow_drop_down_24 : R.drawable.ic_baseline_arrow_drop_up_24));
+        TransitionManager.beginDelayedTransition(binding.rvAlbumList, new AutoTransition());
+        binding.tvArtistAlbumDropdown.setText(isVisibilityAlbums == View.GONE
+                ? context.getResources().getString(R.string.title_expand_artist_album_dropdown)
+                : context.getResources().getString(R.string.title_collapse_artist_album_dropdown));
+        binding.rvAlbumList.setVisibility(isVisibilityAlbums);
     }
 
     @Override

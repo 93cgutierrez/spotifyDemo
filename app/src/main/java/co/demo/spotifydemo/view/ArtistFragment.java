@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
+import co.demo.spotifydemo.databinding.ArtistListItemBinding;
 import co.demo.spotifydemo.model.adapter.ArtistRecyclerAdapter;
 import co.demo.spotifydemo.model.data.Album;
 import co.demo.spotifydemo.model.data.Artist;
@@ -117,7 +118,8 @@ public class ArtistFragment extends Fragment {
         binding.rvArtistList.setHasFixedSize(true);
         binding.rvArtistList.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(), mViewModel.artistList, this::onArtistListener, this::onAlbumListener);
+        artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(), mViewModel.artistList, this::onArtistListener, this::onAlbumListener,
+                this::onAlbumExpandListener);
         binding.rvArtistList.setAdapter(artistRecyclerAdapter);
         //listener for scroll
         mViewModel.managerScrollLazy(requireActivity(),
@@ -125,6 +127,11 @@ public class ArtistFragment extends Fragment {
         if (mViewModel.artistList.size() == 0) {
             mViewModel.showInitialMessage(binding, true);
         }
+    }
+
+    private void onAlbumExpandListener(ArtistListItemBinding binding, View view, int position) {
+        Log.d(TAG, "onAlbumExpandListener: " + position);
+        mViewModel.showHideAlbums(requireActivity(), binding);
     }
 
     private void onAlbumListener(int position) {

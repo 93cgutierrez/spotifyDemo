@@ -29,4 +29,6 @@
     <string name="title_network_error_dialog">Network Error</string>
     <string name="message_general_error_dialog">At this moment you cannot interact with the application correctly due to an internal problem, please comment with the developer.</string>
     <string name="title_general_error_dialog">Error</string>
+    <string name="title_expand_artist_album_dropdown">Show artist albums</string>
+    <string name="title_collapse_artist_album_dropdown">Collapse artist albums</string>
 </resources>
