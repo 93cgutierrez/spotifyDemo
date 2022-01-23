@@ -9,4 +9,6 @@ public class Parameters {
     public static final long DELAY_ON_QUERY_TEXT_CHANGE = 400;
     public static final String INVALID_TOKEN = "401";
     public static final String ERROR_SERVER = "ERROR API";
+    public static final int LIMIT_FOR_PAGE = 4;
+    public static final String DATABASE_NAME = "spotify-demo-database";
 }

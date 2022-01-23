@@ -28,6 +28,7 @@ public class ArtistRecyclerAdapter
     private final OnArtistListener mOnArtistListener;
     private final AlbumRecyclerAdapter.OnAlbumListener mOnAlbumListener;
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private ArtistListItemBinding binding;
 
     public ArtistRecyclerAdapter(Context context,
                                  List<Artist> artistList,
@@ -44,8 +45,7 @@ public class ArtistRecyclerAdapter
     public ViewHolderArtist onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater =
                 LayoutInflater.from(parent.getContext());
-        ArtistListItemBinding binding =
-                ArtistListItemBinding.inflate(layoutInflater,
+        binding = ArtistListItemBinding.inflate(layoutInflater,
                         parent, false);
         return new ViewHolderArtist(binding, mOnArtistListener, mOnAlbumListener);
     }
@@ -116,6 +116,10 @@ public class ArtistRecyclerAdapter
 
     public interface OnArtistListener {
         void onArtistListener(int position);
+    }
+
+    public ArtistListItemBinding getArtistListItemBinding() {
+        return this.binding;
     }
 
 }

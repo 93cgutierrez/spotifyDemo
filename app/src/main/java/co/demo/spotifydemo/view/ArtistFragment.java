@@ -19,11 +19,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import java.util.List;
 import java.util.Objects;
 
 import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
 import co.demo.spotifydemo.model.adapter.ArtistRecyclerAdapter;
+import co.demo.spotifydemo.model.data.Album;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.viewmodel.ArtistViewModel;
@@ -73,6 +75,16 @@ public class ArtistFragment extends Fragment {
         mViewModel.getOnMessageError().observe(getViewLifecycleOwner(), this::getOnMessageErrorObserver);
         mViewModel.isEmptyArtistList().observe(getViewLifecycleOwner(), this::isEmptyArtistListObserver);
         mViewModel.getArtist().observe(getViewLifecycleOwner(), this::getArtistObserver);
+        mViewModel.isEmptyAlbums().observe(getViewLifecycleOwner(), this::isEmptyAlbumsObserver);
+        mViewModel.getAlbums().observe(getViewLifecycleOwner(), this::getAlbumsObserver);
+    }
+
+    private void getAlbumsObserver(List<Album> albums) {
+
+    }
+
+    private void isEmptyAlbumsObserver(Boolean isEmpty) {
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -107,6 +119,9 @@ public class ArtistFragment extends Fragment {
                 LinearLayoutManager.VERTICAL, false));
         artistRecyclerAdapter = new ArtistRecyclerAdapter(getContext(), mViewModel.artistList, this::onArtistListener, this::onAlbumListener);
         binding.rvArtistList.setAdapter(artistRecyclerAdapter);
+        //listener for scroll
+        mViewModel.managerScrollLazy(requireActivity(),
+                artistRecyclerAdapter.getArtistListItemBinding());
         if (mViewModel.artistList.size() == 0) {
             mViewModel.showInitialMessage(binding, true);
         }

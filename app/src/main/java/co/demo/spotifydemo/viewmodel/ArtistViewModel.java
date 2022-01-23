@@ -1,19 +1,25 @@
 package co.demo.spotifydemo.viewmodel;
 
+import static co.demo.spotifydemo.model.converter.GeneralConverter.saveAlbums;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 
@@ -22,6 +28,7 @@ import java.util.List;
 
 import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.ArtistFragmentBinding;
+import co.demo.spotifydemo.databinding.ArtistListItemBinding;
 import co.demo.spotifydemo.model.data.Album;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.model.intermediary.Image;
@@ -34,6 +41,7 @@ import co.demo.spotifydemo.util.NetworkUtil;
 import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.util.SingleLiveEvent;
 import co.demo.spotifydemo.util.PreferenceUtil;
+import co.demo.spotifydemo.util.SpotifyDemoDatabaseUtil;
 import co.demo.spotifydemo.view.ArtistFragmentDirections;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -54,12 +62,25 @@ public class ArtistViewModel extends ViewModel {
     private String mQueryString;
     private final Handler mHandler = new Handler();
     private AlertDialog alertDialog = null;
+    private int offset = 0;
+    private Boolean isScrolling = false;
 
+    //loading
     public LiveData<Boolean> isViewLoading() {
         if (isViewLoading == null) {
             isViewLoading = new SingleLiveEvent<>();
         }
         return isViewLoading;
+    }
+
+    //data list<Album>
+    private SingleLiveEvent<List<Album>> albumsResult = new SingleLiveEvent<>();
+
+    public LiveData<List<Album>> getAlbums() {
+        if (albumsResult == null) {
+            albumsResult = new SingleLiveEvent<>();
+        }
+        return albumsResult;
     }
 
     //data list<Artist>
@@ -72,7 +93,17 @@ public class ArtistViewModel extends ViewModel {
         return artistResult;
     }
 
-    //empty
+    //emptyAlbums
+    private SingleLiveEvent<Boolean> isEmptyAlbums = new SingleLiveEvent<>();
+
+    public LiveData<Boolean> isEmptyAlbums() {
+        if (isEmptyAlbums == null) {
+            isEmptyAlbums = new SingleLiveEvent<>();
+        }
+        return isEmptyAlbums;
+    }
+
+    //empty Artist
     private SingleLiveEvent<Boolean> isEmptyArtistList = new SingleLiveEvent<>();
 
     public LiveData<Boolean> isEmptyArtistList() {
@@ -101,13 +132,48 @@ public class ArtistViewModel extends ViewModel {
         availableMarkets.add("CA");
         availableMarkets.add("IT");
 
+        Artist artist = new Artist("1", "Juanes", 345667777, 99, images, albums);
+        artistList.add(artist);
 
         images.add(new Image(200, "https://dummyimage.com/600x400/e356e3/0011ff", 200));
-        Album album = new Album("album 1", images, availableMarkets, "https://dummyimage.com/600x400/e356e3/0011ff");
+        Album album = new Album("12", "album 1", images, availableMarkets, "https://dummyimage.com/600x400/e356e3/0011ff", artist.getId());
         albums.add(album);
+    }
 
-        Artist artist = new Artist("Juanes", 345667777, 99, images, albums);
-        artistList.add(artist);
+
+    public void getAlbumsPaged(Context context, String artistId) {
+        isViewLoading.postValue(true);
+        try {
+            new Thread(() -> {
+                int resultPage = Parameters.LIMIT_FOR_PAGE;
+                offset = offset * resultPage;
+                Log.d(TAG, "OFFSET: " + offset);
+                //getAlbumsByArtistCount
+                int albumsByArtistIdCount = albumRepository
+                        .getAlbumsByArtistIdCount(context, artistId);
+                //getAllPaged(offset)
+                List<Album> albumsDB = albumRepository
+                        .getAlbumsByArtistPaged(context, artistId, offset);
+                isViewLoading.postValue(false);
+                if (albumsDB != null && albumsDB.size() > 0) {
+                    //incremento el offset
+                    offset = (offset / resultPage) + 1;
+/*                    for (Album album : albumsDB) {
+                    }*/
+                    albumsResult.postValue(albumsDB);
+                } else if (albumsDB.isEmpty() && albumsByArtistIdCount == 0) {
+                    //sin datos en la lista
+                    isEmptyAlbums.postValue(true);
+                } else {
+                    offset = (offset / resultPage);
+                    //no fallo pero no hay mas dato, se mantiene el offset
+                }
+            }).start();
+        } catch (Exception e) {
+            isViewLoading.postValue(false);
+            Log.e(TAG, "getAlbumsPaged: " + e.getMessage());
+            onMessageError.postValue(e.getMessage());
+        }
     }
 
     public void searchArtists(FragmentActivity context, String query) {
@@ -128,25 +194,13 @@ public class ArtistViewModel extends ViewModel {
                                                     && result.body().getArtists().getItems().size() > 0
                                                     && result.body().getArtists().getItems().get(0).getId() != null) {
                                                 ItemArtist itemArtist = result.body().getArtists().getItems().get(0);
-                                                artist = new Artist(itemArtist.getName(),
+                                                artist = new Artist(itemArtist.getId(), itemArtist.getName(),
                                                         itemArtist.getFollowers().getTotal(),
-                                                        itemArtist.getPopularity(),
-                                                        itemArtist.getImages(),
+                                                        itemArtist.getPopularity(), itemArtist.getImages(),
                                                         null);
-                                                if (!NetworkUtil.isNetworkAvailable(context)) {
-                                                    alertDialog = DialogUtil.showErrorDialog(context, false,
-                                                            view -> {
-                                                                if (alertDialog != null
-                                                                        && NetworkUtil.isNetworkAvailable(context)) {
-                                                                    if (alertDialog.isShowing()) {
-                                                                        alertDialog.dismiss();
-                                                                    }
-                                                                    getAlbumsByArtistID(context, result.body().getArtists().getItems().get(0).getId());
-                                                                }
-                                                            }, true);
-                                                    return;
-                                                }
-                                                getAlbumsByArtistID(context, result.body().getArtists().getItems().get(0).getId());
+                                                //poblar BD
+                                                saveArtistBD(context, artist,
+                                                        result.body().getArtists().getItems().get(0).getId());
                                             } else {
                                                 isEmptyArtistList.postValue(true);
                                             }
@@ -176,6 +230,39 @@ public class ArtistViewModel extends ViewModel {
         );
     }
 
+    private void saveArtistBD(Context context, Artist artist, String artistId) {
+        new Thread(() -> {
+            artistRepository.createdArtist(context, artist);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //UI
+                if (!NetworkUtil.isNetworkAvailable(context)) {
+                    alertDialog = DialogUtil.showErrorDialog((Activity) context, false,
+                            view -> {
+                                if (alertDialog != null
+                                        && NetworkUtil.isNetworkAvailable(context)) {
+                                    if (alertDialog.isShowing()) {
+                                        alertDialog.dismiss();
+                                    }
+                                    getAlbumsByArtistID(context, artistId);
+                                }
+                            }, true);
+                    return;
+                }
+                getAlbumsByArtistID(context, artistId);
+            });
+        }).start();
+    }
+
+    private void saveAlbumsBD(Context context, List<Album> albums) {
+        new Thread(() -> {
+            albumRepository.createdAlbum(context, albums);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //UI
+                artistResult.postValue(artist);
+            });
+        }).start();
+    }
+
     public void getAlbumsByArtistID(Context context, String artistId) {
         isViewLoading.postValue(true);
         disposables.add(
@@ -192,14 +279,17 @@ public class ArtistViewModel extends ViewModel {
                                                     && result.body().getItems().size() > 0) {
                                                 List<Album> albums = new ArrayList<>();
                                                 for (ItemAlbum itemAlbum : result.body().getItems()) {
-                                                    Album album = new Album(itemAlbum.getName(), itemAlbum.getImages(),
+                                                    Album album = new Album(itemAlbum.getId(),
+                                                            itemAlbum.getName(), itemAlbum.getImages(),
                                                             itemAlbum.getAvailableMarkets(),
-                                                            itemAlbum.getExternalUrls().getSpotify());
+                                                            itemAlbum.getExternalUrls().getSpotify(),
+                                                            artist != null ? artist.getId() : "0");
                                                     albums.add(album);
                                                 }
                                                 if (artist != null) {
                                                     artist.setAlbums(albums);
-                                                    artistResult.postValue(artist);
+                                                    //poblar BD
+                                                    saveAlbumsBD(context, albums);
                                                 } else {
                                                     Log.d(TAG, "server error");
                                                     throw new HttpException(result);
@@ -334,6 +424,26 @@ public class ArtistViewModel extends ViewModel {
             return;
         }
         searchArtists(activity, mQueryString);
+    }
+
+    public void managerScrollLazy(Context context, ArtistListItemBinding binding) {
+        if (binding != null) {
+            binding.rvAlbumList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (!recyclerView.canScrollVertically(1)
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && !recyclerView.isLayoutSuppressed()) {
+                        //solicitar mas albums
+                        if (artist != null) {
+                            Log.d(TAG, "onScrollStateChanged: solicitando mas albums");
+                            getAlbumsPaged(context, artist.getId());
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
