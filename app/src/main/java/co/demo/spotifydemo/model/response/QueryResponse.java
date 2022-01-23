@@ -4,7 +4,7 @@ import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import co.demo.spotifydemo.model.Artists;
+import co.demo.spotifydemo.model.intermediary.Artists;
 
 public class QueryResponse implements Serializable
 {

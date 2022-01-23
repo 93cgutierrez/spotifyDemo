@@ -1,5 +1,7 @@
 package co.demo.spotifydemo.io;
 
+import android.content.Context;
+
 import co.demo.spotifydemo.util.Parameters;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -11,7 +13,7 @@ public class SpotifyAdapter {
     private static final String BASE_URL = Parameters.API_SERVER_BASE_URL;
     private static SpotifyApiService API_SERVICE;
 
-    public static SpotifyApiService getApiService() {
+    public static SpotifyApiService getApiService(Context context) {
 
         // Creamos un interceptor y le indicamos el log level a usar
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -26,7 +28,7 @@ public class SpotifyAdapter {
                     .baseUrl(BASE_URL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(httpClient.addInterceptor(new ServiceInterceptor()
+                    .client(httpClient.addInterceptor(new ServiceInterceptor(context)
                     ).build()) // <-- usamos el log level
                     .build();
             API_SERVICE = retrofit.create(SpotifyApiService.class);
