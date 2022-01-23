@@ -85,7 +85,6 @@ public class ArtistFragment extends Fragment {
         mViewModel.getOnMessageError().observe(getViewLifecycleOwner(), this::getOnMessageErrorObserver);
         mViewModel.isEmptyArtistList().observe(getViewLifecycleOwner(), this::isEmptyArtistListObserver);
         mViewModel.getArtist().observe(getViewLifecycleOwner(), this::getArtistObserver);
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -1,13 +1,13 @@
 package co.demo.spotifydemo.view;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,17 +16,11 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import co.demo.spotifydemo.MainActivity;
 import co.demo.spotifydemo.R;
-import co.demo.spotifydemo.databinding.FragmentLoginBinding;
 import co.demo.spotifydemo.model.data.Artist;
 import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.util.SingleLiveEvent;
 import co.demo.spotifydemo.util.UtilPreference;
-import co.demo.spotifydemo.viewmodel.ArtistViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class LoginViewModel extends ViewModel {
@@ -45,24 +39,14 @@ public class LoginViewModel extends ViewModel {
         return isViewLoading;
     }
 
-    //data list<Artist>
-    private SingleLiveEvent<Artist> artistResult = new SingleLiveEvent<>();
+    //data token
+    private SingleLiveEvent<String> tokenResult = new SingleLiveEvent<>();
 
-    public LiveData<Artist> getArtist() {
-        if (artistResult == null) {
-            artistResult = new SingleLiveEvent<>();
+    public LiveData<String> getTokenResult() {
+        if (tokenResult == null) {
+            tokenResult = new SingleLiveEvent<>();
         }
-        return artistResult;
-    }
-
-    //empty
-    private SingleLiveEvent<Boolean> isEmptyArtistList = new SingleLiveEvent<>();
-
-    public LiveData<Boolean> isEmptyArtistList() {
-        if (isEmptyArtistList == null) {
-            isEmptyArtistList = new SingleLiveEvent<>();
-        }
-        return isEmptyArtistList;
+        return tokenResult;
     }
 
     //Error
@@ -75,21 +59,18 @@ public class LoginViewModel extends ViewModel {
         return onMessageError;
     }
 
-    @Override
-    protected void onCleared() {
-        disposables.clear();
-    }
 
     public void onAuthorizeClick(FragmentActivity activity) {
+        isViewLoading.postValue(true);
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
-        AuthorizationClient
-                //.openLoginInBrowser(activity, request);
-                .openLoginActivity(activity, Parameters.AUTH_TOKEN_REQUEST_CODE, request);
+        AuthorizationClient.openLoginActivity(activity, Parameters.AUTH_TOKEN_REQUEST_CODE, request);
     }
 
     public void onClearCredentialsClick(Context context) {
+        isViewLoading.postValue(true);
         UtilPreference.clearPreferences(context);
         AuthorizationClient.clearCookies(context);
+        isViewLoading.postValue(false);
     }
 
 
@@ -116,5 +97,20 @@ public class LoginViewModel extends ViewModel {
             navController = Navigation.findNavController(viewContext);
         }
         navController.navigate(R.id.action_loginFragment_to_artistFragment);
+    }
+
+    public void validateFlowToken(FragmentActivity context, int resultCode, Intent data) {
+        isViewLoading.postValue(false);
+        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+        if (Parameters.AUTH_TOKEN_REQUEST_CODE == resultCode && response != null && response.getAccessToken() != null) {
+            tokenResult.postValue(response.getAccessToken());
+        } else {
+            onMessageError.postValue(context.getString(R.string.msg_error_token_permission));
+        }
+    }
+
+    @Override
+    protected void onCleared() {
+        disposables.clear();
     }
 }

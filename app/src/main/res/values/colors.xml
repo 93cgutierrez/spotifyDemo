@@ -12,4 +12,5 @@
     <color name="grey">#AFAFAF</color>
     <color name="artist_card_background_color">#CEF5FA</color>
     <color name="album_card_background_color">#DDFACE</color>
+    <color name="fragment_background">#E7FFE3</color>
 </resources>

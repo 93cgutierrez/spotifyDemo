@@ -49,45 +49,19 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.loginFragment, R.id.artistFragment)
                         .build();
-        // NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.tbToolbar, navController, appBarConfiguration);
-        binding.tbToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            Log.d(TAG, "addOnDestinationChangedListener: " + destination);
-/*                if(destination.getId() == R.id.full_screen_destination) {
-                toolbar.setVisibility(View.GONE);
-                bottomNavigationView.setVisibility(View.GONE);
-            } else {
-                toolbar.setVisibility(View.VISIBLE);
-                bottomNavigationView.setVisibility(View.VISIBLE);
-            }*/
-        });
+        binding.tbToolbar.setNavigationOnClickListener(v -> onBackPressed());
         World.init(getApplicationContext());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        if (Parameters.AUTH_TOKEN_REQUEST_CODE == requestCode) {
-            mAccessToken = response.getAccessToken();
-            UtilPreference.saveToken(this, mAccessToken);
-            updateTokenView();
-            for (Fragment fragment : Objects.requireNonNull(getSupportFragmentManager().getPrimaryNavigationFragment())
-                    .getChildFragmentManager().getFragments())
-            {
-                fragment.onActivityResult(requestCode, resultCode, data);
-            }
+        for (Fragment fragment : Objects.requireNonNull(getSupportFragmentManager().getPrimaryNavigationFragment())
+                .getChildFragmentManager().getFragments())
+        {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void updateTokenView() {
-        Toast.makeText(this, "token: " + mAccessToken, Toast.LENGTH_SHORT).show();
     }
 
     @Override

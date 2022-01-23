@@ -13,5 +13,10 @@
     <string name="item_menu_search">search</string>
     <string name="item_menu_logout">logout</string>
     <string name="title_btn_go_to_spotify">Ir a Spotify</string>
-    <string name="msg_token_invalid">Token vencido</string>
+    <string name="msg_token_invalid">Sesión vencida</string>
+    <string name="msg_error_token_permission">Error algo fallo intente de nuevo por favor</string>
+    <string name="msg_token_ok">Sesión renovado exitosamente</string>
+    <string name="msg_renew_token">Para utilizar la aplicación es necesario que autorice o renueve su sesión con Spotify</string>
+    <string name="title_btn_authorize">Renew</string>
+    <string name="title_btn_clear_cache">Limpiar Cache</string>
 </resources>

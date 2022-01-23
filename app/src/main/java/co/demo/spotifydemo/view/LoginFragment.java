@@ -14,8 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
+
 import co.demo.spotifydemo.R;
 import co.demo.spotifydemo.databinding.FragmentLoginBinding;
+import co.demo.spotifydemo.util.Parameters;
 import co.demo.spotifydemo.util.UtilPreference;
 
 public class LoginFragment extends Fragment {
@@ -62,15 +66,33 @@ public class LoginFragment extends Fragment {
     }
 
     private void subscribeEvents() {
+        mViewModel.isViewLoading().observe(getViewLifecycleOwner(), this::isLoadingObserver);
+        mViewModel.getOnMessageError().observe(getViewLifecycleOwner(), this::getOnMessageErrorObserver);
+        mViewModel.getTokenResult().observe(getViewLifecycleOwner(), this::getTokenObserver);
+    }
 
+    private void getTokenObserver(String token) {
+        UtilPreference.saveToken(requireActivity(),token);
+        Toast.makeText(requireActivity(), R.string.msg_token_ok, Toast.LENGTH_SHORT).show();
+        mViewModel.goToArtistFragment(viewContext);
+    }
+
+    private void getOnMessageErrorObserver(String errorMessage) {
+        Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    private void isLoadingObserver(Boolean showLoading) {
+            binding.cpiLoading.setVisibility(showLoading ? View.VISIBLE :  View.GONE);
+            binding.tvAutorizedText.setVisibility(showLoading ? View.GONE : View.VISIBLE);
+            binding.btnAuthorize.setEnabled(!showLoading);
+            binding.btnClearCache.setEnabled(!showLoading);
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(requireActivity(), "token: login" , Toast.LENGTH_SHORT).show();
-        mViewModel.goToArtistFragment(viewContext);
+        mViewModel.validateFlowToken(requireActivity(), resultCode, data);
     }
 
     @Override
